@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "YT Settings Picker",
+  "version": "1.0.0",
+  "description": "Applies your preferred subtitles, playback speed and quality to every YouTube video.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "yt-settings-picker@flo",
+      "strict_min_version": "140.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  },
+  "icons": {
+    "48": "icons/icon.svg",
+    "96": "icons/icon.svg"
+  },
+  "permissions": ["storage"],
+  "action": {
+    "default_title": "YT Settings Picker",
+    "default_icon": "icons/icon.svg",
+    "default_popup": "popup/popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/*", "*://m.youtube.com/*"],
+      "js": ["src/defaults.js", "src/bridge.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["*://www.youtube.com/*", "*://m.youtube.com/*"],
+      "js": ["src/player.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    }
+  ]
+}

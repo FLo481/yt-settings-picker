@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <img src="../icons/icon.svg" alt="" width="20" height="20" />
+      <h1>YouTube defaults</h1>
+    </header>
+
+    <form id="settings">
+      <label class="row inline">
+        <span class="label">Turn off subtitles/CC</span>
+        <input type="checkbox" name="subtitlesOff" class="visually-hidden" />
+        <span class="switch" aria-hidden="true"></span>
+      </label>
+
+      <div class="row">
+        <span class="label" id="speed-label">Playback speed</span>
+        <div class="segmented" role="radiogroup" aria-labelledby="speed-label">
+          <label><input type="radio" name="speed" value="1" /><span>1×</span></label>
+          <label><input type="radio" name="speed" value="1.5" /><span>1.5×</span></label>
+          <label><input type="radio" name="speed" value="1.75" /><span>1.75×</span></label>
+          <label><input type="radio" name="speed" value="2" /><span>2×</span></label>
+        </div>
+      </div>
+
+      <label class="row">
+        <span class="label">Quality</span>
+        <select name="quality">
+          <option value="highest">Highest available</option>
+          <option value="highres">4320p (8K)</option>
+          <option value="hd2880">2880p (5K)</option>
+          <option value="hd2160">2160p (4K)</option>
+          <option value="hd1440">1440p</option>
+          <option value="hd1080">1080p</option>
+          <option value="hd720">720p</option>
+          <option value="large">480p</option>
+          <option value="medium">360p</option>
+          <option value="small">240p</option>
+          <option value="tiny">144p</option>
+        </select>
+        <span class="hint">If a video doesn't have it, the next lower one is used.</span>
+      </label>
+    </form>
+
+    <footer id="status">Changes apply right away.</footer>
+
+    <script src="../src/defaults.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
