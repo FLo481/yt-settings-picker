@@ -25,11 +25,18 @@
   // YouTube sometimes switches captions on a moment after playback starts,
   // so keep turning them off for a little while.
   const CAPTIONS_GUARD_MS = 5000;
+  // Likewise keep checking the audio track, in case a switch doesn't stick.
+  const AUDIO_GUARD_MS = 5000;
+  // getAudioTrack() only reports the new track once its audio has loaded, so
+  // give a switch time to finish before requesting it again.
+  const AUDIO_RETRY_MS = 2000;
 
   let settings = null;
   let settingsJson = "";
   let configuredVideoId = null;
   let captionsGuardUntil = 0;
+  let audioGuardUntil = 0;
+  let audioRetryAt = 0;
 
   const getPlayer = () => document.getElementById("movie_player");
 
@@ -72,6 +79,19 @@
     if (button?.getAttribute("aria-pressed") === "true") button.click();
   }
 
+  // Audio track language ids end in a role number: ".4" is the original
+  // ("main") track, ".3" a dub, ".10" an AI dub and ".2" an audio description.
+  const isOriginalAudio = (track) =>
+    track?.getLanguageInfo?.().getId().endsWith(".4") ?? false;
+
+  function useOriginalAudio(player) {
+    const original = player.getAvailableAudioTracks?.().find(isOriginalAudio);
+    if (!original || isOriginalAudio(player.getAudioTrack())) return;
+    if (Date.now() < audioRetryAt) return;
+    audioRetryAt = Date.now() + AUDIO_RETRY_MS;
+    player.setAudioTrack(original);
+  }
+
   function onMediaEvent(event) {
     if (!settings || !isWatchPage()) return;
     const player = getPlayer();
@@ -93,15 +113,21 @@
       applySpeed(player);
       applyQuality(player, available);
       captionsGuardUntil = settings.subtitlesOff ? Date.now() + CAPTIONS_GUARD_MS : 0;
+      audioGuardUntil = settings.originalAudio ? Date.now() + AUDIO_GUARD_MS : 0;
     }
     if (Date.now() < captionsGuardUntil) turnOffCaptions(player);
+    if (Date.now() < audioGuardUntil) useOriginalAudio(player);
   }
 
-  // Don't fight the user: touching the player or pressing "c" ends the guard.
+  // Don't fight the user: touching the player ends both guards, pressing "c"
+  // the captions one.
   document.addEventListener(
     "pointerdown",
     (event) => {
-      if (getPlayer()?.contains(event.target)) captionsGuardUntil = 0;
+      if (getPlayer()?.contains(event.target)) {
+        captionsGuardUntil = 0;
+        audioGuardUntil = 0;
+      }
     },
     true,
   );

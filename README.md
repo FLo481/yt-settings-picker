@@ -4,6 +4,8 @@ Firefox extension that applies your preferred YouTube settings every time a
 video starts:
 
 - turn subtitles/CC off
+- switch dubbed audio (e.g. YouTube's AI auto-dubbing) back to the original
+  track
 - playback speed: 1×, 1.5×, 1.75× or 2×
 - quality: highest available, or a fixed resolution (falls back to the next
   lower one if a video doesn't have it)

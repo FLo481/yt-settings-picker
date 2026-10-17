@@ -5,6 +5,7 @@ let statusTimer;
 async function load() {
   const settings = await browser.storage.sync.get(DEFAULT_SETTINGS);
   form.subtitlesOff.checked = settings.subtitlesOff;
+  form.originalAudio.checked = settings.originalAudio;
   form.speed.value = settings.speed;
   form.quality.value = settings.quality;
 }
@@ -12,6 +13,7 @@ async function load() {
 form.addEventListener("change", async () => {
   await browser.storage.sync.set({
     subtitlesOff: form.subtitlesOff.checked,
+    originalAudio: form.originalAudio.checked,
     speed: form.speed.value,
     quality: form.quality.value,
   });
